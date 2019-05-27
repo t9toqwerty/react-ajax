@@ -11,9 +11,9 @@ class FullPost extends Component {
         };
         this.deletePostHandler = this.deletePostHandler.bind(this);
     }
-
+    
     deletePostHandler() {
-        axios.delete("https://jsonplaceholder.typicode.com/posts/" + this.props.id)
+        axios.delete("/posts/" + this.props.id)
             .then(response => {
                 console.log(response);
             }).catch(function (error) {
@@ -23,10 +23,10 @@ class FullPost extends Component {
             // always executed
         });
     }
-
+    
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.id && prevProps.id !== this.props.id) {
-            axios.get("https://jsonplaceholder.typicode.com/posts/" + this.props.id)
+            axios.get("/posts/" + this.props.id)
                 .then(response => {
                     console.log(response);
                     this.setState({
@@ -40,14 +40,14 @@ class FullPost extends Component {
             });
         }
     }
-
+    
     render() {
         let post = <p style={{textAlign: "center"}}>Please select a Post!</p>;
-
+        
         if (this.props.id) {
             post = <p style={{textAlign: "center"}}>Loading...</p>;
         }
-
+        
         if (this.state.loadedPost) {
             post = (
                 <div className="FullPost">

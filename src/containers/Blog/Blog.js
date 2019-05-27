@@ -11,49 +11,53 @@ class Blog extends Component {
         super(props);
         this.state = {
             posts: [],
-            selectedPostId: null
+            selectedPostId: null,
+            error: false
         };
         this.postSelectedHandler = this.postSelectedHandler.bind(this);
     }
-
+    
     postSelectedHandler(id) {
-        console.log(id);
         this.setState({
             selectedPostId: id
         });
     }
-
+    
     componentDidMount() {
-        axios.get("https://jsonplaceholder.typicode.com/posts")
+        axios.get("/posts")
             .then(response => {
                 const posts = response.data.slice(0, 4);
                 const updatedPosts = posts.map(post => {
                     return {...post, author: "Max"};
                 });
-
+                
                 this.setState({
                     posts: updatedPosts
                 });
-            }).catch(function (error) {
-            // handle error
-            console.log(error);
+            }).catch((error) => {
+            this.setState({
+                error: true
+            });
         }).finally(function () {
             // always executed
         });
     }
-
+    
     render() {
-        const posts = this.state.posts.map(post => {
-            return (
-                <Post
-                    key={post.id}
-                    author={post.author}
-                    title={post.title}
-                    clicked={() => this.postSelectedHandler(post.id)}
-                />
-            );
-        });
-
+        let posts = <p style={{textAlign: 'center'}}> Something Went Wrong!</p>;
+        if (!this.state.error) {
+            posts = this.state.posts.map(post => {
+                return (
+                    <Post
+                        key={post.id}
+                        author={post.author}
+                        title={post.title}
+                        clicked={() => this.postSelectedHandler(post.id)}
+                    />
+                );
+            });
+        }
+        
         return (
             <div>
                 <section className="Posts">{posts}</section>
